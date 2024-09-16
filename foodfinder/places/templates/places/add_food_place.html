@@ -1,0 +1,13 @@
+<!-- places/templates/places/add_food_place.html -->
+{% extends 'base.html' %}
+
+{% block title %}Add Food Place - Food Finder{% endblock %}
+
+{% block content %}
+<h2>Add a New Food Place</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Food Place</button>
+</form>
+{% endblock %}

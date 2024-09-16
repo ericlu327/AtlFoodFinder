@@ -1,0 +1,48 @@
+<!-- foodfinder/places/templates/places/food_place_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ food_place.name }} - Food Finder{% endblock %}
+
+{% block content %}
+<h2>{{ food_place.name }}</h2>
+<p>{{ food_place.address }}</p>
+<p>Cuisine: {{ food_place.cuisine_type }}</p>
+<p>Rating: {{ food_place.rating }} ({{ food_place.user_ratings_total }} reviews)</p>
+
+<!-- Opening Hours -->
+{% if food_place.opening_hours and food_place.opening_hours.weekday_text %}
+    <p>Opening Hours:</p>
+    <ul>
+        {% for period in food_place.opening_hours.weekday_text %}
+            <li>{{ period }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<!-- Map and Directions -->
+<div class="map">
+    <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ food_place.latitude }},{{ food_place.longitude }}&zoom=15&size=600x300&markers=color:red%7C{{ food_place.latitude }},{{ food_place.longitude }}&key=AIzaSyDKQS3lLxpPb-qaJVGbpC8fiAoCFSNeiJg" alt="Map of {{ food_place.name }}">
+    <p><a href="https://www.google.com/maps/dir/?api=1&destination={{ food_place.latitude }},{{ food_place.longitude }}" target="_blank">Get Directions</a></p>
+</div>
+
+<h3>User Reviews</h3>
+<div class="form-container">
+    <ul>
+        {% for review in reviews %}
+            <li>
+                <strong>{{ review.user.username }}</strong> ({{ review.created_on|date:"M d, Y" }})
+                <p>Rating: {{ review.rating }}/5</p>
+                <p>{{ review.comment }}</p>
+            </li>
+        {% empty %}
+            <li>No reviews yet. Be the first to review!</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% if user.is_authenticated %}
+    <p><a href="{% url 'add_review' pk=food_place.pk %}">Add a Review</a></p>
+{% else %}
+    <p><a href="{% url 'login' %}?next={{ request.path }}">Login</a> to add a review.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,94 @@
+<!-- places/templates/places/index.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home - Food Finder{% endblock %}
+
+{% block extra_head %}
+<script>
+    let map;
+    let markers = [];
+
+    function initMap() {
+        // make the map on atl
+        const atlanta = { lat: 33.7490, lng: -84.3880 };
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: atlanta,
+            zoom: 13,
+        });
+
+        // get data
+        const foodPlaces = JSON.parse('{{ food_places_json | escapejs }}');
+
+
+        // marker creation
+        foodPlaces.forEach((place, index) => {
+            const marker = new google.maps.Marker({
+                position: { lat: place.latitude, lng: place.longitude },
+                map: map,
+                title: place.name,
+            });
+            markers.push(marker);
+
+    
+            marker.addListener('click', () => {
+                map.panTo(marker.getPosition());
+                map.setZoom(15);
+                highlightListItem(index);
+            });
+        });
+    }
+
+    function highlightListItem(index) {
+        const items = document.querySelectorAll('.place-item');
+        items.forEach((item, idx) => {
+            if (idx === index) {
+                item.classList.add('highlight');
+                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                item.classList.remove('highlight');
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const items = document.querySelectorAll('.place-item');
+        items.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                google.maps.event.trigger(markers[index], 'click');
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="sidebar">
+    <div class="search-form">
+        <form method="get" action="{% url 'index' %}">
+            <input type="text" name="q" placeholder="Search for restaurants..." value="{{ query|default:'' }}">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <h2>{% if query %}Search Results for "{{ query }}"{% else %}Restaurants in Atlanta{% endif %}</h2>
+
+    <ul class="place-list">
+        {% for place in food_places %}
+            <li class="place-item">
+                <h3>{{ place.name }}</h3>
+                <p>{{ place.address }}</p>
+                <p>Cuisine: {{ place.cuisine_type }} 
+                    This doesn't really work yet - eric</p>
+                <p>Rating: {{ place.rating }}/5</p>
+                {% if place.opening_hours and place.opening_hours.open_now %}
+                    <p>Status: {{ place.opening_hours.open_now|yesno:"Open Now,Closed" }}</p>
+                {% endif %}
+                <a href="{% url 'food_place_detail' pk=place.pk %}">View Details</a>
+            </li>
+        {% empty %}
+            <li>No food places found.</li>
+        {% endfor %}
+    </ul>
+</div>
+<div id="map"></div>
+{% endblock %}
