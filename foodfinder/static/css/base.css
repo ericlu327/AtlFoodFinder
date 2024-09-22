@@ -63,7 +63,6 @@ header, footer {
 }
 
 header {
-    height: 60px;
     box-sizing: border-box;
 }
 
@@ -78,3 +77,10 @@ body, html {
     height: 100%;
 }
 
+nav {
+    border-bottom: 1px solid black;
+}
+
+.title {
+    text-align: center;
+}
