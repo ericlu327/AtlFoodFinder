@@ -64,6 +64,8 @@ header, footer {
 
 header {
     box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 footer {
@@ -77,15 +79,19 @@ body, html {
     height: 100%;
 }
 
+
 nav {
-    border-bottom: 1px solid black;
+    text-align: right;
+    margin-right: 20px;
+    margin-top: 100px;
 }
 
 #title {
-    text-align: center;
+    text-align: left;
     font-family: "Bebas Neue", sans-serif;
     font-size: 48px;
     color: black;
+    margin-left: 50px;
 }
 
 #titleURL:link, #titleURL:visited {
