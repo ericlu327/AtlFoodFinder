@@ -1,6 +1,6 @@
 .container {
     display: flex;
-    height: calc(100vh - 100px);
+    height: 83vh
 }
 
 .sidebar {
@@ -66,30 +66,35 @@ header {
     box-sizing: border-box;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    height: 93px;
 }
 
 footer {
     height: 40px;
     line-height: 40px;
+    border-top: black;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 body, html {
     margin: 0;
     padding: 0;
     height: 100%;
+    overflow: hidden;
 }
 
 
 nav {
     text-align: right;
     margin-right: 20px;
-    margin-top: 100px;
+    margin-top: 50px;
 }
 
 #title {
     text-align: left;
     font-family: "Bebas Neue", sans-serif;
-    font-size: 48px;
+    font-size: 40px;
     color: black;
     margin-left: 50px;
 }
