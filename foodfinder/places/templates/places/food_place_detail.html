@@ -1,9 +1,11 @@
 <!-- foodfinder/places/templates/places/food_place_detail.html -->
 {% extends 'base.html' %}
-<head>
-    <link rel:"stylesheet" type="text/css" href="../../static/css/food_place_detail.css">
-</head>
+
 {% block title %}{{ food_place.name }} - Food Finder{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="../../static/css/food_place_detail.css">
+{% endblock %}
 
 {% block content %}
 <div class="sidebar">
