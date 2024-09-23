@@ -81,6 +81,14 @@ nav {
     border-bottom: 1px solid black;
 }
 
-.title {
+#title {
     text-align: center;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 48px;
+    color: black;
+}
+
+#titleURL:link, #titleURL:visited {
+    color: black;
+    text-decoration: none;
 }
