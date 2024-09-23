@@ -15,7 +15,7 @@
 
 <body>
     <header>
-        <h1><a href="{% url 'index' %}">Food Finder</a></h1>
+        <h1 id="title"><a href="{% url 'index' %}">Food Finder</a></h1>
         <nav>
             {% if user.is_authenticated %}
                 <span>Welcome, {{ user.username }} | <a href="{% url 'logout' %}">Logout</a></span>
