@@ -1,4 +1,4 @@
-# foodfinder/foodfinder/settings.py
+# foodfinder/foodfinder/settings.py test 
 
 import os
 from pathlib import Path
