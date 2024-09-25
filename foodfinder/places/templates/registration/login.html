@@ -8,13 +8,16 @@
 {% endblock %}
 
 {% block content %}
-<h2>Login</h2>
-<div class="form-container">
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Login</button>
-    </form>
-</div>
-<p>Don't have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
+<body>
+    <div class="form-container">
+        <h2>Login</h2>
+        <h3>Enter your login credentials</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
+    </div>
+<body>
 {% endblock %}
