@@ -3,6 +3,10 @@
 
 {% block title %}{{ food_place.name }} - Food Finder{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="../../static/css/food_place_detail.css">
+{% endblock %}
+
 {% block content %}
 <div class="sidebar">
     <h2>{{ food_place.name }}</h2>
@@ -43,8 +47,8 @@
 </div>
 
 <!-- Map and Directions -->
-<div class="map" id="RestaurantMap">
-    <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ food_place.latitude }},{{ food_place.longitude }}&zoom=15&size=600x300&markers=color:red%7C{{ food_place.latitude }},{{ food_place.longitude }}&key=AIzaSyDKQS3lLxpPb-qaJVGbpC8fiAoCFSNeiJg" alt="Map of {{ food_place.name }}">
+<div class="map">
+    <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ food_place.latitude }},{{ food_place.longitude }}&zoom=15&size=400x300&scale=2&markers=color:red%7C{{ food_place.latitude }},{{ food_place.longitude }}&key=AIzaSyDKQS3lLxpPb-qaJVGbpC8fiAoCFSNeiJg" alt="Map of {{ food_place.name }}">
     <p><a href="https://www.google.com/maps/dir/?api=1&destination={{ food_place.latitude }},{{ food_place.longitude }}" target="_blank">Get Directions</a></p>
 </div>
 
