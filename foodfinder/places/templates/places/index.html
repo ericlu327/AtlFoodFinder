@@ -3,6 +3,8 @@
 
 {% block title %}Home - Food Finder{% endblock %}
 
+{% load static %} 
+
 {% block extra_head %}
 <link rel="stylesheet" type="text/css" href="../../static/css/index.css">
 <script>
@@ -10,18 +12,17 @@
     let markers = [];
 
     function initMap() {
-        // make the map on atl
+        // Initialize the map centered on Atlanta
         const atlanta = { lat: 33.7490, lng: -84.3880 };
         map = new google.maps.Map(document.getElementById('map'), {
             center: atlanta,
             zoom: 13,
         });
 
-        // get data
+        // Get data from the server
         const foodPlaces = JSON.parse('{{ food_places_json | escapejs }}');
 
-
-        // marker creation
+        // Marker creation for each food place
         foodPlaces.forEach((place, index) => {
             const marker = new google.maps.Marker({
                 position: { lat: place.latitude, lng: place.longitude },
@@ -30,7 +31,7 @@
             });
             markers.push(marker);
 
-    
+            // Add a click event listener for each marker
             marker.addListener('click', () => {
                 map.panTo(marker.getPosition());
                 map.setZoom(15);
@@ -58,18 +59,99 @@
                 google.maps.event.trigger(markers[index], 'click');
             });
         });
+
+        // Automatically get user's location on page load
+        getUserLocation();
     });
+
+    // Geolocation API to get user location
+    function getUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    function showPosition(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        // Automatically set the location in the form
+        document.getElementById('location').value = `${latitude},${longitude}`;
+    }
+
+    function showError(error) {
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                alert("User denied the request for Geolocation.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                alert("Location information is unavailable.");
+                break;
+            case error.TIMEOUT:
+                alert("The request to get user location timed out.");
+                break;
+            case error.UNKNOWN_ERROR:
+                alert("An unknown error occurred.");
+                break;
+        }
+    }
+
+    // Function to toggle the advanced options visibility
+    function toggleAdvancedOptions() {
+        const advancedOptions = document.getElementById('advanced-options');
+        if (advancedOptions.style.display === 'none' || advancedOptions.style.display === '') {
+            advancedOptions.style.display = 'block';
+        } else {
+            advancedOptions.style.display = 'none';
+        }
+    }
 </script>
 {% endblock %}
 
 {% block content %}
 <div class="sidebar">
     <div class="search-form">
-        <form method="get" action="{% url 'index' %}">
-            <input type="text" name="q" placeholder="Search for restaurants..." value="{{ query|default:'' }}">
+        <form method="get" action="{% url 'index' %}" id="search-form" class="search-bar">
+            <!-- Search bar and Advanced Options button layout -->
+            <div class="search-bar-container">
+                <input type="text" name="q" placeholder="Search for restaurants..." value="{{ query|default:'' }}" class="search-bar-input">
+                <button type="button" onclick="toggleAdvancedOptions()" class="advanced-options-btn">Advanced Options</button>
+            </div>
+    
+            <!-- Advanced Options (Initially Hidden) -->
+            <div id="advanced-options" style="display: none;">
+                <label for="cuisine">Cuisine Type:</label>
+                <select name="cuisine" id="cuisine">
+                    <option value="">All</option>
+                    <option value="american" {% if cuisine == "american" %}selected{% endif %}>American</option>
+                    <option value="italian" {% if cuisine == "italian" %}selected{% endif %}>Italian</option>
+                    <option value="chinese" {% if cuisine == "chinese" %}selected{% endif %}>Chinese</option>
+                    <option value="indian" {% if cuisine == "indian" %}selected{% endif %}>Indian</option>
+                </select>
+    
+                <label for="rating">Minimum Rating:</label>
+                <select name="rating" id="rating">
+                    <option value="">Any</option>
+                    <option value="1" {% if rating == "1" %}selected{% endif %}>1 and above</option>
+                    <option value="2" {% if rating == "2" %}selected{% endif %}>2 and above</option>
+                    <option value="3" {% if rating == "3" %}selected{% endif %}>3 and above</option>
+                    <option value="4" {% if rating == "4" %}selected{% endif %}>4 and above</option>
+                    <option value="5" {% if rating == "5" %}selected{% endif %}>5</option>
+                </select>
+    
+                <label for="distance">Max Distance (in km):</label>
+                <input type="number" name="distance" id="distance" placeholder="10" value="{{ distance|default:'' }}">
+            </div>
+    
+            <!-- Hidden field for geolocation -->
+            <input type="hidden" name="location" id="location">
+    
             <button type="submit">Search</button>
         </form>
     </div>
+    
 
     <h2>{% if query %}Search Results for "{{ query }}"{% else %}Restaurants in Atlanta{% endif %}</h2>
 
@@ -78,8 +160,7 @@
             <li class="place-item">
                 <h3>{{ place.name }}</h3>
                 <p>{{ place.address }}</p>
-                <p>Cuisine: {{ place.cuisine_type }} 
-                    This doesn't really work yet - eric</p>
+                <p>Cuisine: {{ place.cuisine_type }}</p>
                 <p>Rating: {{ place.rating }}/5</p>
                 {% if place.opening_hours and place.opening_hours.open_now %}
                     <p>Status: {{ place.opening_hours.open_now|yesno:"Open Now,Closed" }}</p>

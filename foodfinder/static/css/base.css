@@ -1,8 +1,25 @@
-.container {
-    display: flex;
-    height: 83vh
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Ensure no overflow occurs */
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Main content */
+.container {
+    display: flex;
+    flex-grow: 1;
+    height: calc(100vh - 123px); /* Subtract header and footer height */
+    overflow-y: auto;
+}
+
+/* Sidebar Styling */
 .sidebar {
     width: 30%;
     overflow-y: auto;
@@ -11,86 +28,44 @@
     box-sizing: border-box;
 }
 
-.sidebar h2 {
-    margin-top: 0;
-}
-
-.place-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-.place-item {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-}
-
-.place-item:last-child {
-    border-bottom: none;
-}
-
-.place-item:hover {
-    background-color: #f9f9f9;
-}
-
-.place-item.highlight {
-    background-color: #ffefef;
-}
-
-.place-item h3 {
-    margin-bottom: 5px;
-}
-
-.place-item p {
-    margin-bottom: 5px;
-    color: #666;
-}
-
-.place-item a {
-    display: inline-block;
-    margin-top: 10px;
-}
-
 #map {
     width: 70%;
     height: 100%;
 }
 
-header, footer {
-    width: 100%;
-}
-
+/* Header Styling */
 header {
     box-sizing: border-box;
     display: grid;
     grid-template-columns: 1fr 1fr;
     height: 93px;
+    width: 100%;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid black;
 }
 
+/* Footer Styling */
 footer {
-    height: 40px;
-    line-height: 40px;
-    border-top: black;
+    position: relative; /* Change to relative */
+    bottom: 0;
+    width: 100%;
+    height: 30px; /* Small footer */
+    line-height: 30px;
     text-align: center;
-    margin-bottom: 10px;
+    border-top: 1px solid black;
+    background-color: #f1f1f1;
+    margin-top: auto; /* Ensures the footer stays at the bottom */
+    padding-bottom: 10px;
 }
 
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-}
-
-
+/* Navbar adjustments */
 nav {
     text-align: right;
     margin-right: 20px;
     margin-top: 50px;
 }
 
+/* Title styling */
 #title {
     text-align: left;
     font-family: "Bebas Neue", sans-serif;
@@ -98,8 +73,12 @@ nav {
     color: black;
     margin-left: 50px;
 }
-#comment
+
+/* Link styling */
 #titleURL:link, #titleURL:visited {
     color: black;
     text-decoration: none;
 }
+
+
+
