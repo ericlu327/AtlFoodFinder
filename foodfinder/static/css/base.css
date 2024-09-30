@@ -57,6 +57,7 @@ footer {
     background-color: #f1f1f1;
     margin-top: auto; /* Ensures the footer stays at the bottom */
     padding-bottom: 10px;
+    font-family: sans-serif;
 }
 
 /* Navbar adjustments */
