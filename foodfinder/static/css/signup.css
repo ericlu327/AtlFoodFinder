@@ -57,3 +57,19 @@ button {
 button:hover {
     background-color: #45a049;
 }
+
+#id_usable_password_1 {
+    display: none;
+}
+
+#id_usable_password_0 {
+    display: none;
+}
+
+#id_usable_password {
+    display: none;
+}
+
+#id_usable_password_helptext {
+    display: none;
+}
