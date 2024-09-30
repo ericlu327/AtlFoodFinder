@@ -67,12 +67,3 @@ button:hover {
 p {
     margin-top: 20px;
 }
-
-a {
-    text-decoration: none;
-    color: #4CAF50;
-}
-
-a:hover {
-    text-decoration: underline;
-}

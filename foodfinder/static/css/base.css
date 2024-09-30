@@ -21,6 +21,7 @@ body {
 
 /* Sidebar Styling */
 .sidebar {
+    font-family: sans-serif;
     width: 30%;
     overflow-y: auto;
     background-color: #fff;
@@ -60,6 +61,7 @@ footer {
 
 /* Navbar adjustments */
 nav {
+    font-family: sans-serif;
     text-align: right;
     margin-right: 20px;
     margin-top: 50px;
@@ -80,5 +82,12 @@ nav {
     text-decoration: none;
 }
 
+a {
+    text-decoration: none;
+    color: #4CAF50;
+}
 
+a:hover {
+    text-decoration: underline;
+}
 
