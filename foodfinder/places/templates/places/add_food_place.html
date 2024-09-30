@@ -1,7 +1,12 @@
 <!-- places/templates/places/add_food_place.html -->
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Add Food Place - Food Finder{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/add_review.css' %}">
+{% endblock %}
 
 {% block content %}
 <h2>Add a New Food Place</h2>

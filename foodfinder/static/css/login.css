@@ -3,6 +3,7 @@ body {
     align-items: center;
     justify-content: center;
     font-family: sans-serif;
+    line-height: 1.5;
     min-height: 100vh;
     background: #f3f3f3;
     margin: 0;
