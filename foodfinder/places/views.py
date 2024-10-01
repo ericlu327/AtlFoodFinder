@@ -8,45 +8,127 @@ from .models import FoodPlace, Review
 from .utils import fetch_food_places
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Q
+from geopy.distance import geodesic
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import FoodPlace
+from django.contrib.auth.decorators import login_required
+from geopy.distance import geodesic
+import json
+from django.core.serializers.json import DjangoJSONEncoder
 
+# Function to classify cuisine type based on keywords in restaurant name
+import requests
+
+def classify_cuisine_via_yelp(restaurant_name, latitude, longitude):
+    api_key = 'Jy5RviWFz9lwowmFc5Y7I5_86rE-45S8XZpgDvp2PnPCH0-LGtl8PQwJ8Rqb6ZCxcfalApMhHuM8Omq1a_9goN5qX4z1Xs_nxVce3EJlUYHjVqfWcvpWV7LWCXz7ZnYx'
+    url = 'https://api.yelp.com/v3/businesses/search'
+
+    headers = {
+        'Authorization': f'Bearer {api_key}',
+    }
+
+    params = {
+        'term': restaurant_name,
+        'latitude': latitude,
+        'longitude': longitude,
+        'limit': 1
+    }
+
+    response = requests.get(url, headers=headers, params=params)
+
+    if response.status_code == 200:
+        data = response.json()
+        if data['businesses']:
+            categories = data['businesses'][0]['categories']
+            cuisine_types = [category['title'] for category in categories]
+            return ', '.join(cuisine_types)
+        else:
+            return 'Unknown'
+    else:
+        print(f"Error fetching cuisine type from Yelp: {response.status_code}, {response.text}")
+        return 'Unknown'
+
+# Modified index view to include cuisine classification based on name
 def index(request):
     query = request.GET.get('q')
+    cuisine = request.GET.get('cuisine')
+    rating = request.GET.get('rating')
+    distance = request.GET.get('distance')
+    location = request.GET.get('location')
+
+    # Fetch Google Places data
     if query:
         places_data = fetch_food_places(query=query)
     else:
         places_data = fetch_food_places()
 
-    for place_data in places_data: # This is where we probaably need to fix cuisine data it's not being displayed properly.
-        opening_hours = place_data.get('opening_hours', {})
-        types = place_data.get('types', [])
-        cuisine = ', '.join(types)
-        photo_reference = None
-        if 'photos' in place_data:
-            photo_reference = place_data['photos'][0]['photo_reference']
-
+    for place_data in places_data:
         place_id = place_data.get('place_id')
         if not place_id:
             continue
 
-        place, created = FoodPlace.objects.update_or_create(
-            place_id=place_id,
-            defaults={
-                'name': place_data.get('name'),
-                'address': place_data.get('formatted_address'),
-                'latitude': place_data['geometry']['location']['lat'],
-                'longitude': place_data['geometry']['location']['lng'],
-                'rating': place_data.get('rating'),
-                'user_ratings_total': place_data.get('user_ratings_total'),
-                'cuisine_type': cuisine,
-                'opening_hours': opening_hours,
-                'photo_reference': photo_reference,
-            }
-        )
+        # Check if the place already exists in the database
+        try:
+            place = FoodPlace.objects.get(place_id=place_id)
+            if not place.cuisine_type or place.cuisine_type == 'Unknown':
+                # If cuisine type is not available, classify using Yelp
+                restaurant_name = place_data.get('name', '')
+                latitude = place_data['geometry']['location']['lat']
+                longitude = place_data['geometry']['location']['lng']
+                
+                # Get cuisine type from Yelp
+                cuisine_type = classify_cuisine_via_yelp(restaurant_name, latitude, longitude)
+                place.cuisine_type = cuisine_type
+                place.save()
+        except FoodPlace.DoesNotExist:
+            # If the place does not exist in the database, add it
+            restaurant_name = place_data.get('name', '')
+            latitude = place_data['geometry']['location']['lat']
+            longitude = place_data['geometry']['location']['lng']
+            cuisine_type = classify_cuisine_via_yelp(restaurant_name, latitude, longitude)
+
+            opening_hours = place_data.get('opening_hours', {})
+            photo_reference = place_data.get('photos', [{}])[0].get('photo_reference')
+
+            FoodPlace.objects.create(
+                place_id=place_id,
+                name=place_data.get('name'),
+                address=place_data.get('formatted_address'),
+                latitude=latitude,
+                longitude=longitude,
+                rating=place_data.get('rating'),
+                user_ratings_total=place_data.get('user_ratings_total'),
+                cuisine_type=cuisine_type,
+                opening_hours=opening_hours,
+                photo_reference=photo_reference,
+            )
+
+    # Filtering food places for display
+    food_places = FoodPlace.objects.all()
 
     if query:
-        food_places = FoodPlace.objects.filter(name__icontains=query)
-    else:
-        food_places = FoodPlace.objects.all()
+        food_places = food_places.filter(name__icontains=query)
+
+    if cuisine:
+        food_places = food_places.filter(cuisine_type__icontains=cuisine)
+
+    if rating:
+        food_places = food_places.filter(rating__gte=float(rating))
+
+    if location and distance:
+        user_lat, user_lng = map(float, location.split(','))
+        user_location = (user_lat, user_lng)
+
+        filtered_food_places = []
+        for place in food_places:
+            place_location = (place.latitude, place.longitude)
+            distance_to_place = geodesic(user_location, place_location).km
+
+            if distance_to_place <= float(distance):
+                filtered_food_places.append(place)
+
+        food_places = filtered_food_places
 
     food_places_list = list(food_places.values(
         'name', 'address', 'latitude', 'longitude', 'cuisine_type', 'rating', 'user_ratings_total', 'opening_hours'
@@ -57,6 +139,9 @@ def index(request):
         'food_places': food_places,
         'food_places_json': food_places_json,
         'query': query,
+        'cuisine': cuisine,
+        'rating': rating,
+        'distance': distance,
     }
     return render(request, 'places/index.html', context)
 

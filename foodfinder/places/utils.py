@@ -8,6 +8,7 @@ def fetch_food_places(query=None):
 
     params = {
         'query': query if query else 'restaurants in Atlanta',
+        'type': 'restaurant',
         'key': api_key,
     }
 
