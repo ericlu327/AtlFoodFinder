@@ -68,6 +68,9 @@ DATABASES = {
         'NAME': 'your_database_name',
         'USER': 'your_database_user',
         'PASSWORD': 'your_database_password',
+        'OPTIONS': {
+            'timeout': 20,  # Increase timeout to 20 seconds
+        },
         'HOST': 'localhost',
         'PORT': '5432',
     }

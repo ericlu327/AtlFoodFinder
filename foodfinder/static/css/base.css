@@ -92,3 +92,20 @@ a:hover {
     text-decoration: underline;
 }
 
+/* Auth buttons (Logout, Login, Sign Up) */
+.auth-button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    background-color: #4CAF50;
+    font-size: 16px;
+    width: auto;  /* Remove width: 100% to avoid stretching */
+    display: inline-block; /* Ensure buttons display inline with text */
+    transition: background-color 0.3s ease;
+}
+
+.auth-button:hover {
+    background-color: #45a049;
+}
