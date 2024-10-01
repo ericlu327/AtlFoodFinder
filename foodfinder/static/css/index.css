@@ -33,7 +33,7 @@
 .search-form button[type="submit"] {
     grid-column: span 2;
     padding: 10px;
-    background-color: #007bff;
+    background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
@@ -45,7 +45,7 @@
 
 /* Hover effect for the search form button */
 .search-form button[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #45a049;
 }
 
 /* Responsive grid for search form */
@@ -95,7 +95,7 @@
 
 .place-item a {
     display: inline-block;
-    background-color: #007bff;
+    background-color: #4CAF50;
     color: white;
     padding: 10px 15px;
     text-decoration: none;
@@ -105,7 +105,7 @@
 }
 
 .place-item a:hover {
-    background-color: #0056b3;
+    background-color: #45a049;
     cursor: pointer;
 }
 
