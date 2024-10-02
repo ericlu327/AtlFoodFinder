@@ -16,6 +16,8 @@ from django.contrib.auth.decorators import login_required
 from geopy.distance import geodesic
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+from django.http import JsonResponse
+from .models import FoodPlace, Favorite
 
 # Function to classify cuisine type based on keywords in restaurant name
 import requests
@@ -175,3 +177,16 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
+
+#added favorite
+@login_required
+def add_to_favorite(request):
+    if request.method == 'POST':
+        restaurant_id = request.POST.get('restaurant_id')
+        food_place = get_object_or_404(FoodPlace, pk=restaurant_id)
+        favorite, created = Favorite.objects.get_or_create(user=request.user, food_place=food_place)
+        if created:
+            return JsonResponse({'status': 'success', 'message': 'Added to favorites!'})
+        else:
+            return JsonResponse({'status': 'exists', 'message': 'Already in favorites.'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
