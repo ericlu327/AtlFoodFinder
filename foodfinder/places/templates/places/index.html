@@ -166,8 +166,6 @@
                     <p>Status: {{ place.opening_hours.open_now|yesno:"Open Now,Closed" }}</p>
                 {% endif %}
                 <a href="{% url 'food_place_detail' pk=place.pk %}">View Details</a>
-                <a href="#" class="add-to-favorite-btn" data-id="{{ place.pk }}">Add to Favorite</a>
-                <span id="favorite-status-{{ place.pk }}"></span>
             </li>
         {% empty %}
             <li>No food places found.</li>
@@ -177,35 +175,3 @@
 
 <div id="map"></div>
 {% endblock %}
-
-<!-- added favorite -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-$(document).ready(function() {
-    $('.add-to-favorite-btn').click(function(e) {
-        e.preventDefault();
-        var restaurantId = $(this).data('id');
-        var button = $(this);
-
-        $.ajax({
-            url: "{% url 'add_to_favorite' %}",
-            method: "POST",
-            data: {
-                'restaurant_id': restaurantId,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            success: function(response) {
-                if (response.status == 'success') {
-                    button.text('Added to Favorite');
-                    $('#favorite-status-' + restaurantId).text(response.message);
-                } else if (response.status == 'exists') {
-                    $('#favorite-status-' + restaurantId).text(response.message);
-                }
-            },
-            error: function() {
-                $('#favorite-status-' + restaurantId).text('Error occurred');
-            }
-        });
-    });
-});
-</script>
