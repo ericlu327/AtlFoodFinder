@@ -1,8 +1,9 @@
 # foodfinder/places/urls.py
 
-from django.urls import path
-from . import views
 from django.shortcuts import redirect
+from django.urls import path
+
+from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -10,4 +11,5 @@ urlpatterns = [
     path('place/<int:pk>/add_review/', views.add_review, name='add_review'),
     path('signup/', views.signup, name='signup'),
     path('accounts/profile/', lambda request: redirect('index'), name='profile_redirect'),
+    path('profile/', views.profile, name='profile'),
 ]

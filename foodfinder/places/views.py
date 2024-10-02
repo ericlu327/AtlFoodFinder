@@ -1,24 +1,17 @@
 # places/views.py
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
-from .forms import SignUpForm, ReviewForm
-from .models import FoodPlace, Review
-from .utils import fetch_food_places
+import requests
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
-from geopy.distance import geodesic
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import FoodPlace
+from django.http import JsonResponse
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from geopy.distance import geodesic
-import json
-from django.core.serializers.json import DjangoJSONEncoder
+from .forms import ReviewForm, SignUpForm
+from .models import FoodPlace, Review, Favorite
+from .utils import fetch_food_places
 
-# Function to classify cuisine type based on keywords in restaurant name
-import requests
 
 def classify_cuisine_via_yelp(restaurant_name, latitude, longitude):
     api_key = 'Jy5RviWFz9lwowmFc5Y7I5_86rE-45S8XZpgDvp2PnPCH0-LGtl8PQwJ8Rqb6ZCxcfalApMhHuM8Omq1a_9goN5qX4z1Xs_nxVce3EJlUYHjVqfWcvpWV7LWCXz7ZnYx'
@@ -175,3 +168,28 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
+
+@login_required
+def profile(request):
+    favorites = request.user.favorite_set.all()  # or use 'request.user.favorites.all()' if related_name is set
+
+    context = {
+        'user': request.user,
+        'favorites': favorites,
+    }
+
+    return render(request, 'places/profile.html', context)
+
+
+#added favorite
+@login_required
+def add_to_favorite(request):
+    if request.method == 'POST':
+        restaurant_id = request.POST.get('restaurant_id')
+        food_place = get_object_or_404(FoodPlace, pk=restaurant_id)
+        favorite, created = Favorite.objects.get_or_create(user=request.user, food_place=food_place)
+        if created:
+            return JsonResponse({'status': 'success', 'message': 'Added to favorites!'})
+        else:
+            return JsonResponse({'status': 'exists', 'message': 'Already in favorites.'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
