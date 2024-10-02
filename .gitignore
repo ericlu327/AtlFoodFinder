@@ -1,0 +1,8 @@
+# Ignore all __pycache__ directories
+__pycache__/
+
+# Ignore all .pyc files
+*.pyc
+
+# Ignore your database file
+your_database_name
