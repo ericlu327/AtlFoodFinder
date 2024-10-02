@@ -1,26 +1,17 @@
 # places/views.py
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
-from .forms import SignUpForm, ReviewForm
-from .models import FoodPlace, Review
-from .utils import fetch_food_places
+import requests
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
-from geopy.distance import geodesic
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import FoodPlace
+from django.http import JsonResponse
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from geopy.distance import geodesic
-import json
-from django.core.serializers.json import DjangoJSONEncoder
-from django.http import JsonResponse
-from .models import FoodPlace, Favorite
+from .forms import ReviewForm, SignUpForm
+from .models import FoodPlace, Review, Favorite
+from .utils import fetch_food_places
 
-# Function to classify cuisine type based on keywords in restaurant name
-import requests
 
 def classify_cuisine_via_yelp(restaurant_name, latitude, longitude):
     api_key = 'Jy5RviWFz9lwowmFc5Y7I5_86rE-45S8XZpgDvp2PnPCH0-LGtl8PQwJ8Rqb6ZCxcfalApMhHuM8Omq1a_9goN5qX4z1Xs_nxVce3EJlUYHjVqfWcvpWV7LWCXz7ZnYx'
@@ -177,6 +168,17 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
+
+@login_required
+def profile(request):
+    user = request.user
+    favorites = user.favorites.all()
+    
+    context = {
+        'favorites': favorites,
+    }
+    
+    return render(request, 'places/profile.html', context)
 
 #added favorite
 @login_required
