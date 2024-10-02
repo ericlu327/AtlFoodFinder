@@ -43,39 +43,34 @@ def classify_cuisine_via_yelp(restaurant_name, latitude, longitude):
         return 'Unknown'
 
 # Modified index view to include cuisine classification based on name
+
+# Modified index view to include cuisine classification based on name
 def index(request):
     query = request.GET.get('q')
     cuisine = request.GET.get('cuisine')
     rating = request.GET.get('rating')
     distance = request.GET.get('distance')
     location = request.GET.get('location')
-
-    # Fetch Google Places data
     if query:
         places_data = fetch_food_places(query=query)
     else:
         places_data = fetch_food_places()
-
     for place_data in places_data:
         place_id = place_data.get('place_id')
         if not place_id:
             continue
 
-        # Check if the place already exists in the database
         try:
             place = FoodPlace.objects.get(place_id=place_id)
             if not place.cuisine_type or place.cuisine_type == 'Unknown':
-                # If cuisine type is not available, classify using Yelp
                 restaurant_name = place_data.get('name', '')
                 latitude = place_data['geometry']['location']['lat']
                 longitude = place_data['geometry']['location']['lng']
                 
-                # Get cuisine type from Yelp
                 cuisine_type = classify_cuisine_via_yelp(restaurant_name, latitude, longitude)
                 place.cuisine_type = cuisine_type
                 place.save()
         except FoodPlace.DoesNotExist:
-            # If the place does not exist in the database, add it
             restaurant_name = place_data.get('name', '')
             latitude = place_data['geometry']['location']['lat']
             longitude = place_data['geometry']['location']['lng']
@@ -97,7 +92,6 @@ def index(request):
                 photo_reference=photo_reference,
             )
 
-    # Filtering food places for display
     food_places = FoodPlace.objects.all()
 
     if query:
@@ -108,20 +102,18 @@ def index(request):
 
     if rating:
         food_places = food_places.filter(rating__gte=float(rating))
-
     if location and distance:
-        user_lat, user_lng = map(float, location.split(','))
-        user_location = (user_lat, user_lng)
+        try:
+            user_lat, user_lng = map(float, location.split(','))
+            user_location = (user_lat, user_lng)
+            pks_within_distance = [
+                place.pk for place in food_places
+                if geodesic(user_location, (place.latitude, place.longitude)).km <= float(distance)
+            ]
+            food_places = food_places.filter(pk__in=pks_within_distance)
 
-        filtered_food_places = []
-        for place in food_places:
-            place_location = (place.latitude, place.longitude)
-            distance_to_place = geodesic(user_location, place_location).km
-
-            if distance_to_place <= float(distance):
-                filtered_food_places.append(place)
-
-        food_places = filtered_food_places
+        except ValueError:
+            pass
 
     food_places_list = list(food_places.values(
         'name', 'address', 'latitude', 'longitude', 'cuisine_type', 'rating', 'user_ratings_total', 'opening_hours'
@@ -135,9 +127,10 @@ def index(request):
         'cuisine': cuisine,
         'rating': rating,
         'distance': distance,
+        'location': location,
     }
-    return render(request, 'places/index.html', context)
 
+    return render(request, 'places/index.html', context)
 def food_place_detail(request, pk):
     food_place = get_object_or_404(FoodPlace, pk=pk)
     reviews = food_place.reviews.all()
