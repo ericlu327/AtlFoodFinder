@@ -1,4 +1,3 @@
-<!-- foodfinder/places/templates/places/add_review.html -->
 {% extends 'base.html' %}
 
 {% block title %}Add Review - {{ food_place.name }}{% endblock %}
@@ -9,12 +8,12 @@
 {% endblock %}
 
 {% block content %}
-<h2>Add a Review for {{ food_place.name }}</h2>
 <div class="form-container">
+    <h2>Add a Review for {{ food_place.name }}</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Add Review</button>
+        <button type="submit" class="add-review-btn">Add Review</button>
     </form>
 </div>
 {% endblock %}

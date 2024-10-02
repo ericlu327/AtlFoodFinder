@@ -1,3 +1,4 @@
+/* Search form styles */
 .search-form {
     display: flex;
     align-items: center;
@@ -28,10 +29,11 @@
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-button[type="submit"] {
+/* Search form button */
+.search-form button[type="submit"] {
     grid-column: span 2;
     padding: 10px;
-    background-color: #007bff;
+    background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
@@ -41,20 +43,23 @@ button[type="submit"] {
     width: 100%;
 }
 
-button[type="submit"]:hover {
-    background-color: #0056b3;
+/* Hover effect for the search form button */
+.search-form button[type="submit"]:hover {
+    background-color: #45a049;
 }
 
+/* Responsive grid for search form */
 @media (min-width: 600px) {
     .search-form {
         grid-template-columns: repeat(3, 1fr);
     }
 
-    button[type="submit"] {
+    .search-form button[type="submit"] {
         grid-column: span 1;
     }
 }
 
+/* Place list styles */
 .place-list {
     list-style-type: none;
     padding: 0;
@@ -90,7 +95,7 @@ button[type="submit"]:hover {
 
 .place-item a {
     display: inline-block;
-    background-color: #007bff;
+    background-color: #4CAF50;
     color: white;
     padding: 10px 15px;
     text-decoration: none;
@@ -100,10 +105,28 @@ button[type="submit"]:hover {
 }
 
 .place-item a:hover {
-    background-color: #0056b3;
+    background-color: #45a049;
     cursor: pointer;
 }
 
 .place-item:last-child {
     margin-bottom: 0;
+}
+
+/* Auth buttons (Logout, Login, Sign Up) */
+.auth-button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    background-color: #4CAF50;
+    font-size: 16px;
+    width: auto; /* Ensure buttons don't stretch */
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.auth-button:hover {
+    background-color: #45a049;
 }

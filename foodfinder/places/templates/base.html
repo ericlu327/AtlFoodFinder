@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Food Finder{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="../../static/css/base.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
     <!-- Include Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -16,12 +16,22 @@
 
 <body>
     <header>
-        <h1 id="title"><a id = "titleURL" href="{% url 'index' %}">Atlanta Food Finder</a></h1>
+        <h1 id="title"><a id="titleURL" href="{% url 'index' %}">Atlanta Food Finder</a></h1>
         <nav>
             {% if user.is_authenticated %}
-                <span>Welcome, {{ user.username }} | <a href="{% url 'logout' %}">Logout</a></span>
+                <span>Welcome, {{ user.username }} | 
+                    <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="auth-button">Logout</button>
+                    </form>
+                </span>
             {% else %}
-                <a href="{% url 'login' %}">Login</a> | <a href="{% url 'signup' %}">Sign Up</a>
+                <a href="{% url 'login' %}">
+                    <button class="auth-button">Login</button>
+                </a> | 
+                <a href="{% url 'signup' %}">
+                    <button class="auth-button">Sign Up</button>
+                </a>
             {% endif %}
         </nav>
     </header>
@@ -31,7 +41,7 @@
     </div>
 
     <footer>
-        <p>&copy; {% now "Y" %} Food Finder</p>
+        <p>&copy; {% now "Y" %} Food Finder | <a id="teamSite" href="placeholder">Our Team &#9829;</p>
     </footer>
 
 </body>
