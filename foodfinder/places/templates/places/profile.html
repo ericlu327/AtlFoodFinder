@@ -1,0 +1,17 @@
+<!-- templates/places/profile.html -->
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+    <h2>Welcome to your profile, {{ user.username }}!</h2>
+    <p>Email: {{ user.email }}</p>
+    <h3>Your Favorite Restaurants:</h3>
+    <ul>
+        {% for favorite in user.favorites.all %}
+            <li>{{ favorite.name }} - {{ favorite.cuisine_type }}</li>
+        {% empty %}
+            <li>You haven't favorited any restaurants yet.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
