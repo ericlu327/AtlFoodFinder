@@ -1,18 +1,15 @@
 # places/views.py
-
-import json
-
-# Function to classify cuisine type based on keywords in restaurant name
 import requests
-from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
+import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from geopy.distance import geodesic
-
 from .forms import ReviewForm, SignUpForm
-from .models import FoodPlace, Review
+from .models import FoodPlace, Review, Favorite
 from .utils import fetch_food_places
 
 
@@ -183,3 +180,15 @@ def profile(request):
     
     return render(request, 'places/profile.html', context)
 
+#added favorite
+@login_required
+def add_to_favorite(request):
+    if request.method == 'POST':
+        restaurant_id = request.POST.get('restaurant_id')
+        food_place = get_object_or_404(FoodPlace, pk=restaurant_id)
+        favorite, created = Favorite.objects.get_or_create(user=request.user, food_place=food_place)
+        if created:
+            return JsonResponse({'status': 'success', 'message': 'Added to favorites!'})
+        else:
+            return JsonResponse({'status': 'exists', 'message': 'Already in favorites.'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
