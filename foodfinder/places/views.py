@@ -171,14 +171,15 @@ def signup(request):
 
 @login_required
 def profile(request):
-    user = request.user
-    favorites = user.favorites.all()
-    
+    favorites = request.user.favorite_set.all()  # or use 'request.user.favorites.all()' if related_name is set
+
     context = {
+        'user': request.user,
         'favorites': favorites,
     }
-    
+
     return render(request, 'places/profile.html', context)
+
 
 #added favorite
 @login_required

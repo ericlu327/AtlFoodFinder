@@ -1,17 +1,26 @@
-<!-- templates/places/profile.html -->
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}Profile - Food Finder{% endblock %}
+
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="../../static/css/profile.css">
+<link rel="stylesheet" type="text/css" href="../../static/css/base.css">
+{% endblock %}
 
 {% block content %}
+<div class="profile-container">
     <h2>Welcome to your profile, {{ user.username }}!</h2>
     <p>Email: {{ user.email }}</p>
+    
     <h3>Your Favorite Restaurants:</h3>
-    <ul>
-        {% for favorite in user.favorites.all %}
-            <li>{{ favorite.name }} - {{ favorite.cuisine_type }}</li>
+    <ul class="favorite-list">
+        {% for favorite in favorites %}
+            <li>{{ favorite.food_place.name }} - {{ favorite.food_place.cuisine_type }}</li>
         {% empty %}
             <li>You haven't favorited any restaurants yet.</li>
         {% endfor %}
     </ul>
+</div>
 {% endblock %}
