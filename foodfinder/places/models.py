@@ -31,11 +31,16 @@ class Review(models.Model):
     def __str__(self):
         return f'Review by {self.user.username} for {self.food_place.name}'
     
+
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    food_place = models.ForeignKey(FoodPlace, on_delete=models.CASCADE)
+    food_place = models.ForeignKey('FoodPlace', on_delete=models.CASCADE)
     added_at = models.DateTimeField(auto_now_add=True)
+
     class Meta:
-        unique_together = ('user', 'food_place') 
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'food_place'], name='unique_user_food_place')
+        ]
+
     def __str__(self):
         return f'{self.user.username} favorited {self.food_place.name}'

@@ -19,7 +19,7 @@
         <h1 id="title"><a id="titleURL" href="{% url 'index' %}">Atlanta Food Finder</a></h1>
         <nav>
             {% if user.is_authenticated %}
-                <span>Welcome, {{ user.username }} | 
+                <span>Welcome, <strong><a href="{% url 'profile' %}">{{ user.username }}</a></strong> |
                     <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: inline;">
                         {% csrf_token %}
                         <button type="submit" class="auth-button">Logout</button>

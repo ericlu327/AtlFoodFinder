@@ -1,0 +1,72 @@
+/* static/css/profile.css */
+
+/* General Page Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f3f3f3;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Profile Container Styles */
+.profile-container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Header and Content Styling */
+.profile-container h2 {
+    color: #2d7d2a;  /* Green color similar to login button */
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.profile-container p {
+    margin: 10px 0;
+    font-size: 1rem;
+}
+
+.profile-container h3 {
+    margin-top: 25px;
+    color: #333;
+}
+
+/* Favorite List Styling */
+.favorite-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 auto;
+    max-height: 400px;  /* Limit the height of the favorite list */
+    overflow-y: auto;  /* Enable vertical scrolling */
+    width: 90%;  /* Make sure it fits inside the profile container */
+}
+
+.favorite-list li {
+    background: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+    word-wrap: break-word;  /* Break long words to ensure they stay inside the container */
+}
+
+/* Footer Links */
+.profile-container a {
+    color: #2d7d2a;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.profile-container a:hover {
+    text-decoration: underline;
+}
